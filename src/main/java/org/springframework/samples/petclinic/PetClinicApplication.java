@@ -16,22 +16,26 @@
 
 package org.springframework.samples.petclinic;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ImportRuntimeHints;
 
-/**
- * PetClinic Spring Boot Application.
- *
- * @author Dave Syer
- *
- */
 @SpringBootApplication
 @ImportRuntimeHints(PetClinicRuntimeHints.class)
 public class PetClinicApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(PetClinicApplication.class, args);
-	}
+    private static final Logger logger = LoggerFactory.getLogger(PetClinicApplication.class);
 
+    public static void main(String[] args) {
+        SpringApplication app = new SpringApplication(PetClinicApplication.class);
+        app.setBannerMode(Banner.Mode.CONSOLE); // Show banner on startup
+        app.addListeners(event -> logger.info("Application event: {}", event.getClass().getSimpleName()));
+        app.run(args);
+
+        logger.info("PetClinic Application started successfully with profiles: {}",
+                String.join(", ", app.run(args).getEnvironment().getActiveProfiles()));
+    }
 }
